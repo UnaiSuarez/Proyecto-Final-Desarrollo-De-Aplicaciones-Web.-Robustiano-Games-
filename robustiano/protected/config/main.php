@@ -49,9 +49,9 @@ return array(
 
 		// database settings are configured in database.php
         'db'=>array(
-            'connectionString' => 'mysql:host=localhost;dbname=db_videojuegos',
+            'connectionString' => 'mysql:host=localhost;dbname=robustiano',
             'emulatePrepare' => true,
-            'username' => 'videojuegos_user',
+            'username' => 'robustiano',
             'password' => '12345',
             'charset' => 'utf8',
             'tablePrefix' => 'tbl_',
