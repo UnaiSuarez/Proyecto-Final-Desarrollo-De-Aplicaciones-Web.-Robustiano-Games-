@@ -2,7 +2,7 @@ from django.contrib import admin
 # from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 # Register your models here.
-from .models import  Genre, Mensaje, TarjetaRegalo, Videojuego, Lenguaje, User, ImagenVideojuego, VideoVideojuego
+from .models import  DLC, Comentario, Desarrolladora, Genre, Mensaje, TarjetaRegalo, Valoracion, Videojuego, Lenguaje, User, ImagenVideojuego, VideoVideojuego
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
@@ -36,6 +36,22 @@ class TarjetaRegaloAdmin(admin.ModelAdmin):
 @admin.register(Mensaje)
 class MensajesAdmin(admin.ModelAdmin):
     list_display = ['codigo', 'visto', 'fecha', 'emisor', 'receptor']
+
+@admin.register(Desarrolladora)
+class DesarrolldaorasAdmin(admin.ModelAdmin):
+    list_display = ['nombre', 'contacto', 'tipo']
+
+@admin.register(Comentario)
+class ComentarioAdmin(admin.ModelAdmin):
+    list_display = ['comentario', 'fecha', 'usuario', 'videojuego']
+
+@admin.register(Valoracion)
+class ValoracionAdmin(admin.ModelAdmin):
+    list_display = ['valoracion', 'fecha', 'usuario', 'videojuego']
+
+@admin.register(DLC)
+class DLCAdmin(admin.ModelAdmin):
+    list_display = ['title', 'summary', 'precio', 'videojuego']
 
 
 

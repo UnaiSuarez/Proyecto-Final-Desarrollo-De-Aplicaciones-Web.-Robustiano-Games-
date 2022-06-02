@@ -1,4 +1,7 @@
+from cgitb import text
+from enum import Enum
 from os import name, truncate
+from tokenize import blank_re
 from django.db import models
 from django.db.models.fields import CharField
 from django.urls import reverse
@@ -88,7 +91,32 @@ class Mensaje(models.Model):
     emisor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='receptor')
     receptor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='emisor')
 
+class tipoDesarrolladora(Enum):
+    I = 'indie'
+    E = 'empresa'
 
-    
-        
+class Desarrolladora(models.Model):
+    nombre = models.OneToOneField(User, on_delete=models.CASCADE)
+    contacto = models.TextField(blank=True)
+    tipo = models.CharField(max_length=2, choices=[(tag, tag.value) for tag in tipoDesarrolladora])
 
+class Comentario(models.Model):
+    codigo = models.AutoField(primary_key=True)
+    comentario = models.TextField(blank=False)
+    fecha = models.DateField(default=datetime.now)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    videojuego = models.ForeignKey(Videojuego, on_delete=models.CASCADE)
+
+class Valoracion(models.Model):
+    codigo = models.AutoField(primary_key=True)
+    valoracion = models.IntegerField(blank=False, max_length=5)
+    fecha = models.DateField(default=datetime.now)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    videojuego = models.ForeignKey(Videojuego, on_delete=models.CASCADE)
+
+class DLC(models.Model):
+    codigo = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=250)
+    summary = models.TextField(blank=True)
+    precio = models.DecimalField(max_length=20, blank=True, decimal_places=2, max_digits=5, default=0)
+    videojuego = models.ForeignKey(Videojuego, on_delete=models.CASCADE)
