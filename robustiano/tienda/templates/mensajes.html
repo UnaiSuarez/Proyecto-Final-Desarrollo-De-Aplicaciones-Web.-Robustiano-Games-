@@ -1,0 +1,82 @@
+{% extends "base.html" %} {% block title %}Robustiano Games{% endblock %} {% block content %}
+<style>
+    #misAmigos {
+        margin-left: 30%;
+        margin-right: 30vh;
+        width: 50vh;
+        gap: 20px;
+    }
+    
+    #cajamensajes {
+        background: black;
+        padding: 18px 10px;
+        display: flex;
+        flex-direction: column;
+        color: white;
+        border-radius: 10px;
+        margin: 20px;
+    }
+    
+    h2 {
+        text-align: center;
+        padding: 20px;
+    }
+    
+    button {
+        width: 70px;
+        height: 30px;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 10px;
+    }
+    
+    .receptor {
+        text-align: right;
+    }
+    
+    input {
+        width: 50%;
+    }
+</style>
+<main>
+    {% for amigo in emisor %}
+    <h2 id="title">Chat con {{amigo.username}} {% if amigo.imagen.url != null%}
+        <img style="border-radius: 100%; width: 60px; height: 60px;" src="{{amigo.imagen.url}}" alt=""> {% else %}
+        <img style="border-radius: 50%;" src="../../media/images/avatares/avatarDefecto.png" alt=""> {% endif %}</h2>
+    {% endfor %}
+    <section>
+        <div id="cajamensajes">
+            {% for mensaje in mensajes %} {% if mensaje.receptor == receptor %} {% if mensaje.visto == True %}
+            <div class="receptor">
+                <p><span style="color:blue;">✓✓</span> {{mensaje.mensaje}}</p>
+            </div>
+            {% else %}
+            <div class="receptor">
+                <p>✓✓ {{mensaje.mensaje}}</p>
+            </div>
+            {% endif %} {% else %} {% if mensaje.visto == True %}
+            <div class="emisor">
+                <p>{{mensaje.mensaje}} <span style="color:blue;">✓✓</span></p>
+            </div>
+            {% else %}
+            <div class="emisor">
+                <p>{{mensaje.mensaje}} ✓✓</p>
+            </div>
+            {% endif %} {% endif %} {% endfor %}
+            <div class="text">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <table>
+                        {{form.as_table}}
+                    </table>
+                    <button>Enviar</button>
+                </form>
+            </div>
+        </div>
+
+    </section>
+</main>
+<footer>
+    <p>UNAI © 2020</p>
+</footer>
+{% endblock %}
