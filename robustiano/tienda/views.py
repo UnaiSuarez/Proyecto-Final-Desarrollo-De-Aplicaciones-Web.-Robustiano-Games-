@@ -30,7 +30,6 @@ class VideojuegosListView(generic.ListView):
     
     def get_context_data(self, **kwargs):
         context = super(VideojuegosListView, self).get_context_data(**kwargs)
-        context['genero'] = datos['genero']
         context['juegos'] = Videojuego.objects.all()
         return context
     
@@ -58,7 +57,11 @@ def VideojuegoListView(request, pk):
         val = 0
         for valoracion in valoraciones:
             val = val + valoracion.valoracion
-        val = val / len(valoraciones)
+        if len(valoraciones) != 0:
+            val = val / len(valoraciones)
+        else:
+            val = 0
+        
         for videoj in videojuego:
             comentarios = Comentario.objects.filter(videojuego = videoj)
         datos.update({'videojuego_list': videojuego, 'pk':pk, 'comentarios':comentarios, 'form':form, 'formv':formv, 'val':val})
