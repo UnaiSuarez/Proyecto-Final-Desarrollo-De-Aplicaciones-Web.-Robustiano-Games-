@@ -3,8 +3,8 @@ from django.shortcuts import redirect, render
 from django.conf import settings
 import os
 from django.views import generic
-from tienda.forms import ContactForm, CrearTarjetaForm, EnviarMensajeForm, UserForm, AñadirSaldoForm
-from tienda.models import  Genre, Mensaje, TarjetaRegalo, User, Videojuego
+from tienda.forms import ComentarioForm, ContactForm, CrearTarjetaForm, EnviarMensajeForm, UserForm, AñadirSaldoForm
+from tienda.models import  Comentario, Genre, Mensaje, TarjetaRegalo, User, Videojuego
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
@@ -51,8 +51,11 @@ class VideojuegosListView(generic.ListView):
     
 def VideojuegoListView(request, pk):
     if request.method == 'GET':
+        form = ComentarioForm()
         videojuego = Videojuego.objects.filter(title = pk)
-        datos.update({'videojuego_list': videojuego, 'pk':pk})
+        for videoj in videojuego:
+            comentarios = Comentario.objects.filter(videojuego = videoj)
+        datos.update({'videojuego_list': videojuego, 'pk':pk, 'comentarios':comentarios, 'form':form})
     elif request.method == 'POST':
         usuario = request.user
         if usuario.is_anonymous:
@@ -289,3 +292,30 @@ def MensajesView(request, pk):
         return redirect('/mensaje/'+ pk)
     
     return render(request, 'mensajes.html', context=datos)
+
+
+@login_required
+def ComentariosView(request, pk):
+    form = ComentarioForm()
+    datos.update({'form': form, 'pk':pk})
+    if request.method == 'POST':
+        usuario = request.user
+        if usuario.is_anonymous:
+            messages.add_message(request, messages.SUCCESS,'Usted no ha iniciado sesion')
+            return redirect('/accounts/login')
+        else:
+            form = ComentarioForm(request.POST)
+            if form.is_valid():  
+                print('--------------------------------------------------------------')
+                comentario = Comentario()
+                comentario.comentario = form.cleaned_data['comentario']
+                comentario.usuario = usuario
+                videojuegos = Videojuego.objects.filter(title = pk)
+                for videojuego in videojuegos:
+                    comentario.videojuego = videojuego
+                comentario.save()
+                messages.add_message(request, messages.SUCCESS,'comentario guardado')
+            
+        return redirect('/')
+    return render(request, 'comentarios.html', context=datos)
+        

@@ -28,6 +28,17 @@
     li {
         list-style: none;
     }
+    
+    #generos {
+        border: 10px solid rgb(34, 34, 34);
+        background-color: rgba(46, 46, 46);
+    }
+    
+    .comentario {
+        border: 3px solid rgb(0, 0, 0);
+        width: 30%;
+        margin: 2px;
+    }
 </style>
 <script>
     var vAudio = document.getElementById("audio");
@@ -58,7 +69,7 @@
                         <source src="../../media/audios/battlefieldSound.mp3" type="audio/mp3">
                     </audio> {% endif %}
                 <div class="columna">
-                    <div style="text-align: center;">
+                    <div style="text-align:center;">
                         <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner" style="text-align: center;">
                                 {% for imagen in videojuego.imagen.all|slice:":1" %}
@@ -92,15 +103,16 @@
                             </script>
                             {% endfor %}
                         </div>
-                        <p>Informacion: <br> {{videojuego.summary}}</p>
-                        <div id="generos">
-                            <ul>
-                                {% for genero in videojuego.genre.all %}
-                                <li><a href="{% url 'inicio' pk=genero%}">{{genero}}</a></li>
-                                {% endfor %}
-                            </ul>
+                        <div style="text-align:left ; width: 40%;float: left;">
+                            <p style="text-align:center;">Informacion: <br> {{videojuego.summary}}</p>
                         </div>
-                        <form action="" method="post">
+                        <div id="generos" style="float: right; width: 10%; margin-right: 20%;">
+                            <p>Categorías</p>
+                            <hr style="color:rgb(34, 34, 34);"> {% for genero in videojuego.genre.all %}
+                            <li><a href="{% url 'inicio' pk=genero%}">{{genero}}</a></li>
+                            {% endfor %}
+                        </div>
+                        <form action="" method="post" style="text-align:center ; width: 100%; float:right;">
                             {% csrf_token %}
                             <p>Precio: {{videojuego.precio}}</p><button value="Comprar" class="botonComprar">Comprar</button> {% if perms.tienda.edit_videojuego %}
                             <a href="{% url 'editarVideojuego' pk=videojuego %}"><img style="filter:invert(100%)" src="https://img.icons8.com/material-outlined/24/000000/pencil--v1.png" /></a>
@@ -112,19 +124,19 @@
                 {% endfor %}
             </div>
         </div>
-        {% block pagination %} {% if is_paginated %}
-        <div class="pagination">
-            <span class="page-links">
-                {% if page_obj.has_previous %}
-                    <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
-                {% endif %}
-                <span class="page-current">
-                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                </span> {% if page_obj.has_next %}
-            <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a> {% endif %}
-            </span>
+        <div id="comentarios">
+            <br>
+            <br> {% include "comentarios.html" %}
+            <h3>comentarios</h3>
+            {% if comentarios.count != 0 %} {% for comentario in comentarios %}
+            <div class="comentario">
+                <p>
+                    <a href="{% url 'usuario' pk=comentario.usuario %}">{{comentario.usuario}}</a> {{comentario.fecha}}</p>
+                <p>{{comentario.comentario}}</p>
+            </div> {% endfor %} {% else %}
+            <p>aun no hay comentarios</p>
+            {% endif %}
         </div>
-        {% endif %} {% endblock %}
     </section>
 </main>
 <footer>

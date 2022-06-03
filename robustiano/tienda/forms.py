@@ -28,3 +28,6 @@ class ContactForm(forms.Form):
 
 class EnviarMensajeForm(forms.Form):
     mensaje = forms.CharField()
+
+class ComentarioForm(forms.Form):
+    comentario = forms.CharField()
