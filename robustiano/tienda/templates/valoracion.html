@@ -1,0 +1,7 @@
+<form action='/valoracion/{{pk}}' method="post">
+    {% csrf_token %}
+    <button>Valorar</button>
+    <table>
+        {{formv.as_table}}
+    </table>
+</form>

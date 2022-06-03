@@ -1,3 +1,4 @@
+from email.policy import default
 from django.forms import ModelForm, fields, DateInput
 from tienda.models import TarjetaRegalo, User
 from django import forms
@@ -31,3 +32,6 @@ class EnviarMensajeForm(forms.Form):
 
 class ComentarioForm(forms.Form):
     comentario = forms.CharField()
+
+class ValoracionForm(forms.Form):
+    valoracion = forms.IntegerField(max_value=5)

@@ -20,7 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls.conf import include
 
-from tienda.views import AmigosUsuarioListView, ComentariosView, EliminarVideojuego, MensajesView, ModificarVideojuego, UsuariosListView, VideojuegoListView, VideojuegosListView, VideojuegosUsuarioListView, AñadirAmigo, AñadirSaldo2, crear_tarjeta, crear_usuario
+from tienda.views import AmigosUsuarioListView, ComentariosView, EliminarVideojuego, MensajesView, ModificarVideojuego, UsuariosListView, ValoracionView, VideojuegoListView, VideojuegosListView, VideojuegosUsuarioListView, AñadirAmigo, AñadirSaldo2, crear_tarjeta, crear_usuario
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -38,7 +38,8 @@ urlpatterns = [
     path('usuarios/', UsuariosListView.as_view(), name='usuarios'),
     path('usuario/<str:pk>', AñadirAmigo, name='usuario'),
     path('mensaje/<str:pk>', MensajesView, name='mensajes'),
-    path('comentario/<str:pk>', ComentariosView, name='comentarios')
+    path('comentario/<str:pk>', ComentariosView, name='comentarios'),
+    path('valoracion/<str:pk>', ValoracionView, name='valoracion'),
 
 ]
 

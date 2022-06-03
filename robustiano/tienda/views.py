@@ -3,8 +3,8 @@ from django.shortcuts import redirect, render
 from django.conf import settings
 import os
 from django.views import generic
-from tienda.forms import ComentarioForm, ContactForm, CrearTarjetaForm, EnviarMensajeForm, UserForm, AñadirSaldoForm
-from tienda.models import  Comentario, Genre, Mensaje, TarjetaRegalo, User, Videojuego
+from tienda.forms import ComentarioForm, ContactForm, CrearTarjetaForm, EnviarMensajeForm, UserForm, ValoracionForm, AñadirSaldoForm
+from tienda.models import  Comentario, Genre, Mensaje, TarjetaRegalo, User, Valoracion, Videojuego
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
@@ -52,10 +52,16 @@ class VideojuegosListView(generic.ListView):
 def VideojuegoListView(request, pk):
     if request.method == 'GET':
         form = ComentarioForm()
+        formv = ValoracionForm()
         videojuego = Videojuego.objects.filter(title = pk)
+        valoraciones = Valoracion.objects.filter(videojuego = pk)
+        val = 0
+        for valoracion in valoraciones:
+            val = val + valoracion.valoracion
+        val = val / len(valoraciones)
         for videoj in videojuego:
             comentarios = Comentario.objects.filter(videojuego = videoj)
-        datos.update({'videojuego_list': videojuego, 'pk':pk, 'comentarios':comentarios, 'form':form})
+        datos.update({'videojuego_list': videojuego, 'pk':pk, 'comentarios':comentarios, 'form':form, 'formv':formv, 'val':val})
     elif request.method == 'POST':
         usuario = request.user
         if usuario.is_anonymous:
@@ -316,6 +322,32 @@ def ComentariosView(request, pk):
                 comentario.save()
                 messages.add_message(request, messages.SUCCESS,'comentario guardado')
             
-        return redirect('/')
+        return redirect('/videojuego/'+pk)
     return render(request, 'comentarios.html', context=datos)
+        
+@login_required
+def ValoracionView(request, pk):
+    form = ValoracionForm()
+    datos.clear()
+    datos.update({'formv': form, 'pk':pk})
+    if request.method == 'POST':
+        usuario = request.user
+        if usuario.is_anonymous:
+            messages.add_message(request, messages.SUCCESS,'Usted no ha iniciado sesion')
+            return redirect('/accounts/login')
+        else:
+            form = ValoracionForm(request.POST)
+            if form.is_valid():  
+                print('--------------------------------------------------------------')
+                valoracion = Valoracion()
+                valoracion.valoracion = form.cleaned_data['valoracion']
+                valoracion.usuario = usuario
+                videojuegos = Videojuego.objects.filter(title = pk)
+                for videojuego in videojuegos:
+                    valoracion.videojuego = videojuego
+                valoracion.save()
+                messages.add_message(request, messages.SUCCESS,'valoracion guardada')
+            
+        return redirect('/videojuego/'+pk)
+    return render(request, 'valoracion.html', context=datos)
         
